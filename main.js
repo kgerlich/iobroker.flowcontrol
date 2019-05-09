@@ -83,7 +83,7 @@ adapter.on('stateChange', function (id, state) {
 });
 
 function setState(obj_name, name, role, type, val, write) {
-    adapter.log.debug("setState" + obj_name);
+    adapter.log.debug("setState: " + obj_name);
     adapter.getObject(obj_name, function(err, obj) { 
         if (!obj) {
             adapter.setObject(obj_name, {
@@ -156,7 +156,7 @@ function process(to = true) {
             // The whole response has been received. Print out the result.
             resp.on('end', () => {
                 var alive = JSON.parse(data);
-                adapter.log.debug(alive);
+                adapter.log.debug(JSON.stringify(alive);
                 setState('connected', 'connection', 'indicator' , 'bool', true, false);
                 setState('alive', 'server alive', 'indicator' , 'number', alive.alive, false);
                 setState('valve', 'current valve state', 'indicator' , 'text', alive.valve, false);
