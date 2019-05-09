@@ -62,17 +62,18 @@ adapter.on('ready', function () {
 });
 
 adapter.on('stateChange', function (id, state) {
-    adapter.log.info('stateChange ' + id + ' ' + JSON.stringify(state));
+    adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
 
     if (!id || !state || state.ack) {
         return;
     }
     var l = id.split('.');
     if (l.length != 4) {
-        adapter.info('what are you trying to set in ' + id + '???');
+        adapter.log.warn('what are you trying to set in ' + id + '???');
         return;
     }
     if (l[3] == 'valve') {
+        adapter.log.debug('process command to set valve...');
         if (state.val) {
             setValveOn();            
         } else {
@@ -82,6 +83,7 @@ adapter.on('stateChange', function (id, state) {
 });
 
 function setState(obj_name, name, role, type, val, write) {
+    adapter.log.debug("setState" + obj_name);
     adapter.getObject(obj_name, function(err, obj) { 
         if (!obj) {
             adapter.setObject(obj_name, {
@@ -111,9 +113,12 @@ function setValveOn() {
         
         // The whole response has been received. Print out the result.
         resp.on('end', () => {
+            adapter.log.debug("command to turn ON valve was sent!");
+            setState('error', 'current error', 'indicator' , 'text', 'success', false);
+            process(false);
         });
     }).on("error", (err) => {
-        console.log("Error: " + err.message);
+        adapter.log.error("Error: " + err.message);
     });
 }
 
@@ -128,11 +133,12 @@ function setValveOff() {
         
         // The whole response has been received. Print out the result.
         resp.on('end', () => {
+            adapter.log.debug("command to turn OFF valve was sent!");
             setState('error', 'current error', 'indicator' , 'text', 'success', false);
             process(false);
         });
     }).on("error", (err) => {
-        console.log("Error: " + err.message);
+        adapter.log.error("Error: " + err.message);
         setState('error', 'current error', 'indicator' , 'text', 'command_failed', false);
     });
 }
@@ -150,7 +156,7 @@ function process(to = true) {
             // The whole response has been received. Print out the result.
             resp.on('end', () => {
                 var alive = JSON.parse(data);
-                console.log(alive);
+                adapter.log.debug(alive);
                 setState('connected', 'connection', 'indicator' , 'bool', true, false);
                 setState('alive', 'server alive', 'indicator' , 'number', alive.alive, false);
                 setState('valve', 'current valve state', 'indicator' , 'text', alive.valve, false);
@@ -158,7 +164,7 @@ function process(to = true) {
                     setTimeout(process, 15*1000);
             });
         }).on("error", (err) => {
-            console.log("Error: " + err.message);
+            adapter.log.error("Error: " + err.message);
             setState('connected', 'connection', 'indicator' , 'bool', false, false);
             setState('alive', 'server alive', 'indicator' , 'number', -1, false);
             setState('valve', 'current valve state', 'indicator' , 'text', 'unknown', false);
