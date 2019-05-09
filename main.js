@@ -81,7 +81,7 @@ adapter.on('stateChange', function (id, state) {
     }
 });
 
-function setState(obj_name, name, role, type, val) {
+function setState(obj_name, name, role, type, val, write) {
     adapter.getObject(obj_name, function(err, obj) { 
         if (!obj) {
             adapter.setObject(obj_name, {
@@ -91,7 +91,7 @@ function setState(obj_name, name, role, type, val) {
                 role: role,
                 type: type,
                 read: true,
-                write: false,
+                write: write,
             },
             native: {}
             });
@@ -128,12 +128,12 @@ function setValveOff() {
         
         // The whole response has been received. Print out the result.
         resp.on('end', () => {
-            setState('error', 'current error', 'indicator' , 'text', 'success');
+            setState('error', 'current error', 'indicator' , 'text', 'success', false);
             process(false);
         });
     }).on("error", (err) => {
         console.log("Error: " + err.message);
-        setState('error', 'current error', 'indicator' , 'text', 'command_failed');
+        setState('error', 'current error', 'indicator' , 'text', 'command_failed', false);
     });
 }
 
@@ -151,17 +151,17 @@ function process(to = true) {
             resp.on('end', () => {
                 var alive = JSON.parse(data);
                 console.log(alive);
-                setState('connected', 'connection', 'indicator' , 'bool', true);
-                setState('alive', 'server alive', 'indicator' , 'number', alive.alive);
-                setState('valve', 'current valve state', 'indicator' , 'text', alive.valve);
+                setState('connected', 'connection', 'indicator' , 'bool', true, false);
+                setState('alive', 'server alive', 'indicator' , 'number', alive.alive, false);
+                setState('valve', 'current valve state', 'indicator' , 'text', alive.valve, false);
                 if(to)
                     setTimeout(process, 15*1000);
             });
         }).on("error", (err) => {
             console.log("Error: " + err.message);
-            setState('connected', 'connection', 'indicator' , 'bool', false);
-            setState('alive', 'server alive', 'indicator' , 'number', -1);
-            setState('valve', 'current valve state', 'indicator' , 'text', 'unknown');
+            setState('connected', 'connection', 'indicator' , 'bool', false, false);
+            setState('alive', 'server alive', 'indicator' , 'number', -1, false);
+            setState('valve', 'current valve state', 'indicator' , 'text', 'unknown', false);
             if(to)
                 setTimeout(process, 5*1000);
         });
@@ -169,9 +169,9 @@ function process(to = true) {
 }
 
 function resetStates() {
-    setState('command.valve', 'set valve state', 'switch' , 'bool', false);
-    setState('valve', 'current valve state', 'indicator' , 'text', 'unknown');
-    setState('error', 'current error', 'indicator' , 'text', 'success');
+    setState('command.valve', 'set valve state', 'switch' , 'bool', false, true);
+    setState('valve', 'current valve state', 'indicator' , 'text', 'unknown', false);
+    setState('error', 'current error', 'indicator' , 'text', 'success', false);
 }
 
 function main() {
