@@ -1,0 +1,57 @@
+{
+    "common": {
+        "name": "flowcontrol",
+        "version": "0.0.1",
+        "news": {
+            "0.0.1": {
+                "en": "initial adapter",
+                "de": "Initiale Version"
+            }
+        },
+		"title": "flowcontrol Adapter",
+        "titleLang": {
+            "en": "flowcontrol",
+            "de": "flowcontrol"
+        },
+        "desc": {
+            "en": "Adapter for FlowControl own brand devices",
+            "de": "Adapter für FlowControl eigene Marke Geräte"
+        },
+        "authors": [
+            "Klaus Gerlicher <klaus@klausgerlicher.de>"
+        ],
+        "docs": {
+            "en": "docs/en/admin.md",
+            "de": "docs/de/admin.md"
+        },
+        "platform": "Javascript/Node.js",
+        "mode": "daemon",
+        "icon": "flowcontrol.png",
+        "materialize": true,
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/kgerlich/ioBroker.flowcontrol/master/admin/flowcontrol.png",
+        "keywords": ["flowcontrol", "valve"],
+        "readme": "https://github.com/kgerlich/ioBroker.flowcontrol/blob/master/README.md",
+        "loglevel": "info",
+        "type": "misc-data",
+        "license": "MIT",
+        "messagebox": false
+    },
+    "native": {
+        "server": ""
+    },
+    "instanceObjects": [
+        {
+            "_id": "connected",
+            "type": "state",
+            "common": {
+                "name": "Info about connection to flowcontrol",
+                "type": "boolean",
+                "read":  true,
+                "write": false,
+				"role":  "indicator"
+            },
+            "native": {}
+        }
+    ]
+}
