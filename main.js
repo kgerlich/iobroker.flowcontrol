@@ -159,7 +159,7 @@ function process(to = true) {
                 adapter.log.debug(JSON.stringify(alive));
                 setState('connected', 'connection', 'indicator' , 'bool', true, false);
                 setState('alive', 'server alive', 'indicator' , 'number', alive.alive, false);
-                setState('valve', 'current valve state', 'indicator' , 'text', alive.valve, false);
+                setState('valve', 'current valve state', 'indicator' , 'bool', alive.valve == 'open', false);
                 if(to)
                     setTimeout(process, 15*1000);
             });
@@ -167,7 +167,7 @@ function process(to = true) {
             adapter.log.error("Error: " + err.message);
             setState('connected', 'connection', 'indicator' , 'bool', false, false);
             setState('alive', 'server alive', 'indicator' , 'number', -1, false);
-            setState('valve', 'current valve state', 'indicator' , 'text', 'unknown', false);
+            setState('valve', 'current valve state', 'indicator' , 'bool', false, false);
             if(to)
                 setTimeout(process, 5*1000);
         });
@@ -176,7 +176,7 @@ function process(to = true) {
 
 function resetStates() {
     setState('command.valve', 'set valve state', 'switch' , 'bool', false, true);
-    setState('valve', 'current valve state', 'indicator' , 'text', 'unknown', false);
+    setState('valve', 'current valve state', 'indicator' , 'bool', false, false);
     setState('error', 'current error', 'indicator' , 'text', 'success', false);
 }
 
